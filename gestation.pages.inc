@@ -2,7 +2,7 @@
 /**
  *  2009 Erick Romero (erm) <erick@adalid-soft.com>
  *  Gestation
-*/
+ */
 
 /**
  * @file
@@ -11,17 +11,25 @@
 
 
 // return the main form
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function gestation_main() {
   $output = drupal_get_form('gestation_form');
   return $output;
 }
 
 // create the main form to select date known
-function gestation_form () {
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
+function gestation_form($form) {
 
   $form = array();
 
-  $note .=  t("Purpose: To estimate the duration of pregnancy using 266 days from the date of conception (or 280 days from the first day of the last menstrual period).");
+  $note = t("Purpose: To estimate the duration of pregnancy using 266 days from the date of conception (or 280 days from the first day of the last menstrual period).");
 
   $form['notes'] = array(
     '#type' => 'item',
@@ -33,23 +41,28 @@ function gestation_form () {
     '#type' => 'radios',
     '#title' => t("Date known"),
     '#required' => TRUE,
+
     //'#default_value' => 1,
     '#options' => array(
       1 => t("First day of the last menstrual period (LMP)"),
-      2 => t("Estimated date of confinement (EDC)")
+      2 => t("Estimated date of confinement (EDC)"),
     ),
   );
 
-//erm. submit
-//----------------------------------------------------------------------------
+  //erm. submit
+  //----------------------------------------------------------------------------
   $form['submit'] = array(
-  '#type'   => 'submit',
-  '#value'  => t("Continue"),
+    '#type' => 'submit',
+    '#value' => t("Continue"),
   );
 
   return $form;
 }
 
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function gestation_form_submit($form, &$form_state) {
   if ($form_state['values']['date_known'] == 1) {
     $form_state['redirect'] = 'gestation/lmp/';
@@ -61,17 +74,25 @@ function gestation_form_submit($form, &$form_state) {
 
 
 // return the lmp form
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function gestation_lmp() {
-  $output  = "";
-  $output .= drupal_get_form('gestation_lmp_form');
+  $output = "";
+  $output = drupal_get_form('gestation_lmp_form');
   return $output;
 }
 
-function gestation_lmp_form () {
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
+function gestation_lmp_form($form) {
 
   $form = array();
 
-  $note .=  t("Purpose: To estimate the duration of pregnancy using 266 days from the date of conception (or 280 days from the first day of the last menstrual period).");
+  $note = t("Purpose: To estimate the duration of pregnancy using 266 days from the date of conception (or 280 days from the first day of the last menstrual period).");
 
   $form['notes'] = array(
     '#type' => 'item',
@@ -102,41 +123,39 @@ function gestation_lmp_form () {
     '#type' => 'textfield',
     '#title' => t("E-mail"),
     '#size' => 20,
-    '#description'  => t("Enter an e-mail to get the results"),
+    '#description' => t("Enter an e-mail to get the results"),
   );
 
-//erm. submit
-//----------------------------------------------------------------------------
+  //erm. submit
+  //----------------------------------------------------------------------------
   $form['submit'] = array(
-  '#type'   => 'submit',
-  '#value'  => t("Calcular"),
+    '#type' => 'submit',
+    '#value' => t("Calcular"),
   );
 
   return $form;
 }
 
 
-function gestation_lmp_form_validate ($form, &$form_state) {
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
+function gestation_lmp_form_validate($form, &$form_state) {
 
-  $date1= mktime(0, 0, 0,
-    $form_state['values']['date1']['month'],
-    $form_state['values']['date1']['day'],
-    $form_state['values']['date1']['year']);
+  $date1 = mktime(0, 0, 0, $form_state['values']['date1']['month'], $form_state['values']['date1']['day'], $form_state['values']['date1']['year']);
 
-  $date2= mktime(0, 0, 0,
-    $form_state['values']['date2']['month'],
-    $form_state['values']['date2']['day'],
-    $form_state['values']['date2']['year']);
+  $date2 = mktime(0, 0, 0, $form_state['values']['date2']['month'], $form_state['values']['date2']['day'], $form_state['values']['date2']['year']);
 
   if ($date2 - $date1 < 0) {
     form_set_error('date2', t("The examination date cannot be before LMP"));
   }
 
-  if ($date2 - $date1 > (320 * 86400) ) {
+  if ($date2 - $date1 > (320 * 86400)) {
     form_set_error('date2', t("The exam date is far past the LMP"));
   }
 
-  if ( $form_state['values']['email'] <> '' && ! valid_email_address($form_state['values']['email']) ) {
+  if ($form_state['values']['email'] <> '' && ! valid_email_address($form_state['values']['email'])) {
     form_set_error('email', t('Enter a valid e-email'));
   }
 
@@ -144,27 +163,15 @@ function gestation_lmp_form_validate ($form, &$form_state) {
 
   $params['t'] = 1;
 
-  $params['d1'] = mktime(0, 0, 0,
-    strftime('%m', $date1),
-    strftime('%d', $date1),
-    strftime('%Y', $date1));
+  $params['d1'] = mktime(0, 0, 0, strftime('%m', $date1), strftime('%d', $date1), strftime('%Y', $date1));
 
-  $params['d2'] = mktime(0, 0, 0,
-    strftime('%m', $date2),
-    strftime('%d', $date2),
-    strftime('%Y', $date2));
+  $params['d2'] = mktime(0, 0, 0, strftime('%m', $date2), strftime('%d', $date2), strftime('%Y', $date2));
 
-  $params['d3'] = mktime(0, 0, 0,
-    strftime('%m', $date1),
-    strftime('%d', $date1) + 280,
-    strftime('%Y', $date1));
+  $params['d3'] = mktime(0, 0, 0, strftime('%m', $date1), strftime('%d', $date1) + 280, strftime('%Y', $date1));
 
-  $params['d4'] = mktime(0, 0, 0,
-    strftime('%m', $date1),
-    strftime('%d', $date1) + 14,
-    strftime('%Y', $date1));
+  $params['d4'] = mktime(0, 0, 0, strftime('%m', $date1), strftime('%d', $date1) + 14, strftime('%Y', $date1));
 
-  $params['w1'] = round((($date2 - $date1) / 86400 ) / 7, 2);
+  $params['w1'] = round((($date2 - $date1) / 86400) / 7, 2);
   $params['w2'] = round($params['w1'] - 2, 2);
 
   $form_state['params'] = base64_encode(json_encode($params));
@@ -172,6 +179,10 @@ function gestation_lmp_form_validate ($form, &$form_state) {
 }
 
 
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function gestation_lmp_form_submit($form, &$form_state) {
 
   if ($form_state['values']['email'] <> '') {
@@ -189,17 +200,25 @@ function gestation_lmp_form_submit($form, &$form_state) {
 
 
 // return the edc form
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function gestation_edc() {
-  $output  = "";
-  $output .= drupal_get_form('gestation_edc_form');
+  $output = "";
+  $output = drupal_get_form('gestation_edc_form');
   return $output;
 }
 
-function gestation_edc_form () {
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
+function gestation_edc_form($form) {
 
   $form = array();
 
-  $note .=  t("Purpose: To estimate the duration of pregnancy using 266 days from the date of conception (or 280 days from the first day of the last menstrual period).");
+  $note = t("Purpose: To estimate the duration of pregnancy using 266 days from the date of conception (or 280 days from the first day of the last menstrual period).");
 
   $form['notes'] = array(
     '#type' => 'item',
@@ -230,31 +249,29 @@ function gestation_edc_form () {
     '#type' => 'textfield',
     '#title' => t("E-mail"),
     '#size' => 20,
-    '#description'  => t("Enter an e-mail to get the results"),
+    '#description' => t("Enter an e-mail to get the results"),
   );
 
-//erm. submit
-//----------------------------------------------------------------------------
+  //erm. submit
+  //----------------------------------------------------------------------------
   $form['submit'] = array(
-  '#type'   => 'submit',
-  '#value'  => t("Calcular"),
+    '#type' => 'submit',
+    '#value' => t("Calcular"),
   );
 
   return $form;
 }
 
 
-function gestation_edc_form_validate ($form, &$form_state) {
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
+function gestation_edc_form_validate($form, &$form_state) {
 
-  $date1= mktime(0, 0, 0,
-    $form_state['values']['date1']['month'],
-    $form_state['values']['date1']['day'],
-    $form_state['values']['date1']['year']);
+  $date1 = mktime(0, 0, 0, $form_state['values']['date1']['month'], $form_state['values']['date1']['day'], $form_state['values']['date1']['year']);
 
-  $date2= mktime(0, 0, 0,
-    $form_state['values']['date2']['month'],
-    $form_state['values']['date2']['day'],
-    $form_state['values']['date2']['year']);
+  $date2 = mktime(0, 0, 0, $form_state['values']['date2']['month'], $form_state['values']['date2']['day'], $form_state['values']['date2']['year']);
 
   if ($date1 - $date2 < (-60 * 86400)) {
     form_set_error('date2', t("EDC and Examination date may be incorrect"));
@@ -264,30 +281,18 @@ function gestation_edc_form_validate ($form, &$form_state) {
 
   $params['t'] = 2;
 
-  $params['d1'] = mktime(0, 0, 0,
-    strftime('%m', $date1),
-    strftime('%d', $date1),
-    strftime('%Y', $date1));
+  $params['d1'] = mktime(0, 0, 0, strftime('%m', $date1), strftime('%d', $date1), strftime('%Y', $date1));
 
-  $params['d2'] = mktime(0, 0, 0,
-    strftime('%m', $date2),
-    strftime('%d', $date2),
-    strftime('%Y', $date2));
+  $params['d2'] = mktime(0, 0, 0, strftime('%m', $date2), strftime('%d', $date2), strftime('%Y', $date2));
 
-  $params['d3'] = mktime(0, 0, 0,
-    strftime('%m', $date1),
-    strftime('%d', $date1) - 280,
-    strftime('%Y', $date1));
+  $params['d3'] = mktime(0, 0, 0, strftime('%m', $date1), strftime('%d', $date1) - 280, strftime('%Y', $date1));
 
-  $params['d4'] = mktime(0, 0, 0,
-    strftime('%m', $date1),
-    strftime('%d', $date1) - 266,
-    strftime('%Y', $date1));
+  $params['d4'] = mktime(0, 0, 0, strftime('%m', $date1), strftime('%d', $date1) - 266, strftime('%Y', $date1));
 
-  $params['w1'] = round((($date2 - $params['d3']) / 86400 ) / 7, 2);
+  $params['w1'] = round((($date2 - $params['d3']) / 86400) / 7, 2);
   $params['w2'] = round($params['w1'] - 2, 2);
 
-/*
+  /*
   if ($params['w1'] < 0) {
     form_set_error('date2', t("EDC and Examination date may be incorrect"));
   }
@@ -295,13 +300,17 @@ function gestation_edc_form_validate ($form, &$form_state) {
 
   $form_state['params'] = base64_encode(json_encode($params));
 
-  if ( $form_state['values']['email'] <> '' && ! valid_email_address($form_state['values']['email']) ) {
+  if ($form_state['values']['email'] <> '' && ! valid_email_address($form_state['values']['email'])) {
     form_set_error('email', t('Enter a valid e-email'));
   }
 
 }
 
 
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function gestation_edc_form_submit($form, &$form_state) {
 
   if ($form_state['values']['email'] <> '') {
@@ -316,39 +325,52 @@ function gestation_edc_form_submit($form, &$form_state) {
 }
 
 
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function gestation_send_email(&$form_state) {
 
   $target_email = $form_state['values']['email'];
 
-  db_query('SELECT id FROM {fertility} WHERE email = "%s"', $target_email);
-  if ( ! db_affected_rows()) {
-    db_query("INSERT INTO {fertility} (email, counter) VALUES ('%s', 1)", $target_email);
+  $result = db_query('SELECT * FROM {fertility} WHERE email = :email', array(':email' => $target_email));
+
+  
+  if ($result->rowCount()==0) {
+    // TODO Please review the conversion of this statement to the D7 database API syntax.
+    /* db_query("INSERT INTO {fertility} (email, counter) VALUES ('%s', 1)", $target_email) */
+    db_insert('fertility')->fields(array(
+      'email' => $target_email,
+      'counter' => 1,
+    ))->execute();
   }
   else {
-    db_query("UPDATE {fertility} SET counter = counter + 1 ", $target_email);
+    // TODO Please review the conversion of this statement to the D7 database API syntax.
+    /* db_query("UPDATE {fertility} SET counter = counter + 1 ", $target_email) */
+	$record = $result->fetchObject();
+    db_update('fertility')->fields(array(
+      'counter' => $record->counter + 1,
+    ))->execute();
   }
 
   $tmp_logo = sprintf('
-    <img id="logo" alt="%s" src="%s/logo.png"/>
+    <img id="logo" alt="" src="http://%s/%s/logo.png"/>
     <div>%s - %s</div>
-    ',
-    variable_get('site_name', ''),
-    path_to_theme(),
-    variable_get('site_name', ''),
-    drupal_get_title()
-  );
+    ', variable_get('site_name', ''), path_to_theme(), variable_get('site_name', ''), drupal_get_title());
 
   //erm class to send mail with attachments easily
-  require("class.phpmailer.php");
+  $path = drupal_get_path('module', 'gestation');
+  
+  require $path. '/' . "class.phpmailer.php";
   $mail = new phpmailer();
 
   $mail->AddAddress($target_email); //erm defined at begin of this file
 
-  $mail->From     = "notreply@{$_SERVER['SERVER_NAME']}";
+  $mail->From = "notreply@{$_SERVER['SERVER_NAME']}";
   $mail->FromName = t("Gestation Calculator");
-  $mail->Subject  = t("Gestation Calculator - Seus Resultados");
-  $mail->Body     = $tmp_logo . gestation_result($form_state['params']);
-  $mail->CharSet  = "UTF-8";
+  $mail->Subject = t("Gestation Calculator - Seus Resultados");
+  $mail->Body = $tmp_logo . gestation_result($form_state['params']);
+  $mail->CharSet = "UTF-8";
   $mail->IsHTML(TRUE);
 
   $mail->Send();
@@ -358,15 +380,19 @@ function gestation_send_email(&$form_state) {
 }
 
 
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function gestation_result($params) {
 
   $printfriendly = sprintf('<div> %s </div>', t('<a target="_blank" href="@link">Printer Friendly</a>', array('@link' => url('gestation/print/' . $params))));
 
-  $params   = json_decode(base64_decode($params), TRUE);
+  $params = json_decode(base64_decode($params), TRUE);
 
-  $content  = '';
+  $content = '';
 
-  if ( ! is_array($params) || count($params) != 7) {
+  if (! is_array($params) || count($params) != 7) {
     $content .= t("Invalid params");
   }
   else {
@@ -378,6 +404,10 @@ function gestation_result($params) {
 }
 
 
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function gestation_format_result($params) {
 
   if ($params['t'] != 1 && $params['t'] != 2) {
@@ -385,7 +415,7 @@ function gestation_format_result($params) {
   }
 
   $content = '';
-  $dateformat = "%B %e, %Y";
+  $dateformat = "%B %d, %Y";
 
   $date1 = array();
   $date2 = array();
@@ -409,12 +439,12 @@ function gestation_format_result($params) {
 
     $date1['yy'] = intval(strftime('%Y', $params['d4']));
     $date1['mm'] = intval(strftime('%m', $params['d4']));
-    $date1['dd'] = array (intval(strftime('%d', $params['d4'])) => sprintf('<div class="cal_red"> %s </div>', intval(strftime('%d', $params['d4']))));
+    $date1['dd'] = array(intval(strftime('%d', $params['d4'])) => sprintf('<div class="cal_red"> %s </div>', intval(strftime('%d', $params['d4']))));
     $date1['nn'] = t("Red: Estimated date of conception");
 
     $date2['yy'] = intval(strftime('%Y', $params['d3']));
     $date2['mm'] = intval(strftime('%m', $params['d3']));
-    $date2['dd'] = array (intval(strftime('%d', $params['d3'])) => sprintf('<div class="cal_green"> %s </div>', intval(strftime('%d', $params['d3']))));
+    $date2['dd'] = array(intval(strftime('%d', $params['d3'])) => sprintf('<div class="cal_green"> %s </div>', intval(strftime('%d', $params['d3']))));
     $date2['nn'] = t("Green: Estimated date of confinement");
 
   }
@@ -441,12 +471,12 @@ function gestation_format_result($params) {
 
     $date2['yy'] = intval(strftime('%Y', $params['d4']));
     $date2['mm'] = intval(strftime('%m', $params['d4']));
-    $date2['dd'] = array (intval(strftime('%d', $params['d4'])) => sprintf('<div class="cal_red"> %s </div>', intval(strftime('%d', $params['d4']))));
+    $date2['dd'] = array(intval(strftime('%d', $params['d4'])) => sprintf('<div class="cal_red"> %s </div>', intval(strftime('%d', $params['d4']))));
     $date2['nn'] = t("Red: Estimated date of conception");
 
     $date1['yy'] = intval(strftime('%Y', $params['d3']));
     $date1['mm'] = intval(strftime('%m', $params['d3']));
-    $date1['dd'] = array (intval(strftime('%d', $params['d3'])) => sprintf('<div class="cal_green"> %s </div>', intval(strftime('%d', $params['d3']))));
+    $date1['dd'] = array(intval(strftime('%d', $params['d3'])) => sprintf('<div class="cal_green"> %s </div>', intval(strftime('%d', $params['d3']))));
     $date1['nn'] = t("Green: First day of the last menstrual period");
 
   }
@@ -454,15 +484,16 @@ function gestation_format_result($params) {
   //erm generate the calendars
   $calendar = '';
 
-  $config = array (
-     'template' => '
+  $config = array(
+    'template' => '
        {table_open}<table class="cal_table" border="0" cellpadding="2" cellspacing="2">{/table_open}
        {cal_cell_content} <b>{content}</b> {/cal_cell_content}
        {cal_cell_content_today} <b>{content}</b> {/cal_cell_content_today}
-     '
-   );
+     ',
+  );
 
-  require("class.calendar.php");
+  $path = drupal_get_path('module', 'gestation');
+  require $path . '/' . "class.calendar.php";
   $calendar_class = new CI_Calendar($config);
 
   $calendar .= '
@@ -514,10 +545,7 @@ function gestation_format_result($params) {
 
   $calendar .= '</tr>';
 
-  $calendar .=  sprintf('<tr><td colspan="3"> <div> %s </div> <div> %s </div></td></tr>',
-    $date1['nn'],
-    $date2['nn']
-  );
+  $calendar .= sprintf('<tr><td colspan="3"> <div> %s </div> <div> %s </div></td></tr>', $date1['nn'], $date2['nn']);
 
   $calendar .= '</table></div>';
   $content .= $calendar;
@@ -526,13 +554,17 @@ function gestation_format_result($params) {
 
 }
 
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function gestation_print($params) {
 
-  $params   = json_decode(base64_decode($params), TRUE);
+  $params = json_decode(base64_decode($params), TRUE);
 
-  $content  = '';
+  $content = '';
 
-  if ( ! is_array($params) || count($params) != 7) {
+  if (! is_array($params) || count($params) != 7) {
     $content .= t("Invalid params");
   }
   else {
@@ -540,14 +572,9 @@ function gestation_print($params) {
   }
 
   $tmp_logo = sprintf('
-    <img id="logo" alt="%s" src="%s/logo.png"/>
+    <img id="logo" alt="" src="http://%s/%s/logo.png"/>
     <div>%s - %s</div>
-    ',
-    variable_get('site_name', ''),
-    path_to_theme(),
-    variable_get('site_name', ''),
-    drupal_get_title()
-  );
+    ', variable_get('site_name', ''), path_to_theme(), variable_get('site_name', ''), drupal_get_title());
 
   $output = sprintf('
     <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -570,14 +597,7 @@ function gestation_print($params) {
 
       </body>
     </html>
-    ',
-    drupal_get_html_head(),
-    path_to_theme(),
-    drupal_get_title(),
-    variable_get('site_name', ''),
-    $tmp_logo,
-    $content
-  );
+    ', drupal_get_html_head(), path_to_theme(), drupal_get_title(), variable_get('site_name', ''), $tmp_logo, $content);
 
   echo $output;
 

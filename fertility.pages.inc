@@ -2,7 +2,7 @@
 /**
  *  2008 Erick Romero (erm) <erick@adalid-soft.com>
  *  Fertility
-*/
+ */
 
 /**
  * @file
@@ -13,6 +13,10 @@
  * Site-wide contact page.
  */
 
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function fertility_main() {
 
   $output = drupal_get_form('fertility_form');
@@ -20,20 +24,25 @@ function fertility_main() {
 }
 
 
-function fertility_form () {
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
+ 
+function fertility_form($form,&$form_state) {
 
   $form = array();
 
-  $now = time();
+  $now = REQUEST_TIME;
   $today = array(
-    'year' =>   intval(strftime('%Y', $now)),
-    'month' =>   intval(strftime('%m', $now)),
-    'day' =>   intval(strftime('%d', $now))
+    'year' => intval(strftime('%Y', $now)),
+    'month' => intval(strftime('%m', $now)),
+    'day' => intval(strftime('%d', $now)),
   );
 
-  $today2 = sprintf('%s%s%s', $today['year'],$today['month'],$today['day']);
+  $today2 = sprintf('%s%s%s', $today['year'], $today['month'], $today['day']);
 
-  $note .=  t("Algumas mulheres se dão conta de quando ovulam porque sentem determinadas sensações corporais. Mas, a ovulação não é tão óbvia: na verdade, existem ocasiões em que é difícil saber com certeza o período em que se está ovulando. A calculadora da ovulação que você encontrará abaixo, lhe ajudará a determinar quais são os dias do mês em que estará mais fértil.  Para obter melhores resultados, insira a data do primeiro dia dos seus três últimos ciclos menstruais");
+  $note = t("Algumas mulheres se dão conta de quando ovulam porque sentem determinadas sensações corporais. Mas, a ovulação não é tão óbvia: na verdade, existem ocasiões em que é difícil saber com certeza o período em que se está ovulando. A calculadora da ovulação que você encontrará abaixo, lhe ajudará a determinar quais são os dias do mês em que estará mais fértil.  Para obter melhores resultados, insira a data do primeiro dia dos seus três últimos ciclos menstruais");
 
   $form['today'] = array(
     '#type' => 'hidden',
@@ -49,7 +58,7 @@ function fertility_form () {
   $form['div1'] = array(
     '#type' => 'fieldset',
     '#title' => t('Data 1'),
-    '#description'  => t("Caso não se recorde de todas as datas, insira a data do primeiro dia do seu último ciclo menstrual"),
+    '#description' => t("Caso não se recorde de todas as datas, insira a data do primeiro dia do seu último ciclo menstrual"),
     '#collapsible' => FALSE,
     '#collapsed' => FALSE,
   );
@@ -64,7 +73,7 @@ function fertility_form () {
   $form['div2'] = array(
     '#type' => 'fieldset',
     '#title' => t('Data 2'),
-    '#description'  => t("Com base em um ciclo menstrual médio de 28 dias, insira a data do seu período menstrual anterior:"),
+    '#description' => t("Com base em um ciclo menstrual médio de 28 dias, insira a data do seu período menstrual anterior:"),
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
   );
@@ -79,7 +88,7 @@ function fertility_form () {
   $form['div3'] = array(
     '#type' => 'fieldset',
     '#title' => t('Data 3'),
-    '#description'  => t("Para efetuar um cálculo mais preciso, insira a data do seu período menstrual anterior (aproximadamente 3 meses atrás)"),
+    '#description' => t("Para efetuar um cálculo mais preciso, insira a data do seu período menstrual anterior (aproximadamente 3 meses atrás)"),
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
   );
@@ -95,14 +104,14 @@ function fertility_form () {
     '#type' => 'textfield',
     '#title' => t("E-mail"),
     '#size' => 20,
-    '#description'  => t("Digite um e-mail para enviar os resultados"),
+    '#description' => t("Digite um e-mail para enviar os resultados"),
   );
 
-//erm. submit
-//----------------------------------------------------------------------------
+  //erm. submit
+  //----------------------------------------------------------------------------
   $form['submit'] = array(
-  '#type'   => 'submit',
-  '#value'  => t("Calcular"),
+    '#type' => 'submit',
+    '#value' => t("Calcular"),
   );
 
   return $form;
@@ -110,7 +119,11 @@ function fertility_form () {
 
 
 
-function fertility_form_validate ($form, &$form_state) {
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
+function fertility_form_validate($form, &$form_state) {
 
   $cycle = 28;
   $div = 0;
@@ -118,28 +131,19 @@ function fertility_form_validate ($form, &$form_state) {
   $per2 = 0;
   $per3 = 0;
 
-  $date1= mktime(0, 0, 0,
-    $form_state['values']['date1']['month'],
-    $form_state['values']['date1']['day'],
-    $form_state['values']['date1']['year']);
+  $date1 = mktime(0, 0, 0, $form_state['values']['date1']['month'], $form_state['values']['date1']['day'], $form_state['values']['date1']['year']);
 
-  $date2= mktime(0, 0, 0,
-    $form_state['values']['date2']['month'],
-    $form_state['values']['date2']['day'],
-    $form_state['values']['date2']['year']);
+  $date2 = mktime(0, 0, 0, $form_state['values']['date2']['month'], $form_state['values']['date2']['day'], $form_state['values']['date2']['year']);
 
-  $date3= mktime(0, 0, 0,
-    $form_state['values']['date3']['month'],
-    $form_state['values']['date3']['day'],
-    $form_state['values']['date3']['year']);
+  $date3 = mktime(0, 0, 0, $form_state['values']['date3']['month'], $form_state['values']['date3']['day'], $form_state['values']['date3']['year']);
 
-  $date22 = sprintf('%s%s%s', $form_state['values']['date2']['year'],$form_state['values']['date2']['month'],$form_state['values']['date2']['day']);
-  $date33 = sprintf('%s%s%s', $form_state['values']['date3']['year'],$form_state['values']['date3']['month'],$form_state['values']['date3']['day']);
+  $date22 = sprintf('%s%s%s', $form_state['values']['date2']['year'], $form_state['values']['date2']['month'], $form_state['values']['date2']['day']);
+  $date33 = sprintf('%s%s%s', $form_state['values']['date3']['year'], $form_state['values']['date3']['month'], $form_state['values']['date3']['day']);
 
   //se especifico la fecha dos
   if ($form_state['values']['today'] != $date22) {
     $div++;
-    if ($date2 >= $date1){
+    if ($date2 >= $date1) {
       form_set_error('date2', t('Data 2 deve ser inferior a Data 1'));
     }
     else {
@@ -175,12 +179,12 @@ function fertility_form_validate ($form, &$form_state) {
     $date3 = 0;
   }
 
-  if ( $div != 0) {
+  if ($div != 0) {
     $period = ($per1 + $per2 + $per3) / 86400;
     $cycle = round($period / $div, 0);
     if ($cycle < 21 || $cycle > 35) {
       $which = 'date1';
-      if ($form_state['values']['today'] != $date22 && ($per1/86400 < 21 || $per1/86400 > 35)) {
+      if ($form_state['values']['today'] != $date22 && ($per1 / 86400 < 21 || $per1 / 86400 > 35)) {
         $which = 'date2';
       }
       elseif ($form_state['values']['today'] != $date33) {
@@ -190,27 +194,26 @@ function fertility_form_validate ($form, &$form_state) {
     }
   }
 
-  $per_nex = mktime(0,0,0, strftime('%m', $date1), (strftime('%d', $date1)+($cycle-1)), strftime('%Y', $date1)); //next cycle
+  $per_nex = mktime(0, 0, 0, strftime('%m', $date1), (strftime('%d', $date1) + ($cycle -1)), strftime('%Y', $date1)); //next cycle
 
-  $fer_end = mktime(0,0,0, strftime('%m', $per_nex), (strftime('%d', $per_nex)+(-14)), strftime('%Y', $per_nex)); //next cycle
-  $fer_ini = mktime(0,0,0, strftime('%m', $fer_end), (strftime('%d', $fer_end)+(-5)), strftime('%Y', $fer_end)); //next cycle
+  $fer_end = mktime(0, 0, 0, strftime('%m', $per_nex), (strftime('%d', $per_nex) + (-14)), strftime('%Y', $per_nex)); //next cycle
+  $fer_ini = mktime(0, 0, 0, strftime('%m', $fer_end), (strftime('%d', $fer_end) + (-5)), strftime('%Y', $fer_end)); //next cycle
 
   //$fer_end = $per_nex - (14 * 86400); //fertility period ends
   //$fer_ini = $fer_end - (5 * 86400);    //fertility period begins
 
-  $params = array (
+  $params = array(
     'd0' => $per_nex,
     'd0c' => $cycle,
     'd01' => $fer_ini,
     'd02' => $fer_end,
-
     'd1' => $date1,
     'd2' => $date2,
-    'd3' => $date3
+    'd3' => $date3,
   );
 
   //$form_state['values']['email'] = trim($form_state['values']['email']);
-  if ( $form_state['values']['email'] <> '' && ! valid_email_address($form_state['values']['email']) ) {
+  if ($form_state['values']['email'] <> '' && ! valid_email_address($form_state['values']['email'])) {
     form_set_error('email', t('Digite um endereço de email válido'));
   }
 
@@ -219,6 +222,10 @@ function fertility_form_validate ($form, &$form_state) {
 }
 
 
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function fertility_form_submit($form, &$form_state) {
 
   $target_email = $form_state['values']['email'];
@@ -226,37 +233,45 @@ function fertility_form_submit($form, &$form_state) {
 
   if ($target_email <> '') {
 
-    db_query('SELECT id FROM {fertility} WHERE email = "%s"', $target_email);
-    if ( ! db_affected_rows()) {
-      db_query("INSERT INTO {fertility} (email, counter) VALUES ('%s', 1)", $target_email);
+    $result = db_query('SELECT * FROM {fertility} WHERE email = :email', array(':email' => $target_email));
+	$record = $result->fetchObject();
+    if ($result->rowCount()==0) {
+      // TODO Please review the conversion of this statement to the D7 database API syntax.
+      /* db_query("INSERT INTO {fertility} (email, counter) VALUES ('%s', 1)", $target_email) */
+      db_insert('fertility')->fields(array(
+        'email' => $target_email,
+        'counter' => 1,
+      ))->execute();
     }
     else {
-      db_query("UPDATE {fertility} SET counter = counter + 1 ", $target_email);
+      // TODO Please review the conversion of this statement to the D7 database API syntax.
+      /* db_query("UPDATE {fertility} SET counter = counter + 1 ", $target_email) */
+	  
+	  // echo ($result->fetchObject())->counter; die();
+      db_update('fertility')->fields(array(
+        'counter' => $record->counter + 1,
+      ))->execute();
     }
 
 
     $tmp_logo = sprintf('
-      <img id="logo" alt="%s" src="%s/logo.png"/>
+      <img id="logo" alt="" src="http://%s/%s/logo.png"/>
       <div>%s - %s</div>
-      ',
-      variable_get('site_name', ''),
-      path_to_theme(),
-      variable_get('site_name', ''),
-      drupal_get_title()
-    );
+      ', variable_get('site_name', ''), path_to_theme(), variable_get('site_name', ''), drupal_get_title());
 
 
     //erm class to send mail with attachments easily
-    require("class.phpmailer.php");
+	$path = drupal_get_path('module', 'fertility');
+    require $path . '/' . "class.phpmailer.php";
     $mail = new phpmailer();
 
     $mail->AddAddress($target_email); //erm defined at begin of this file
 
-    $mail->From     = "notreply@{$_SERVER['SERVER_NAME']}";
+    $mail->From = "notreply@{$_SERVER['SERVER_NAME']}";
     $mail->FromName = t("Fertility Calculator");
-    $mail->Subject  = t("Fertility Calculator - Seus Resultados");
-    $mail->Body     = $tmp_logo . fertility_result($form_state['params']);
-    $mail->CharSet  = "UTF-8";
+    $mail->Subject = t("Fertility Calculator - Seus Resultados");
+    $mail->Body = $tmp_logo . fertility_result($form_state['params']);
+    $mail->CharSet = "UTF-8";
     $mail->IsHTML(TRUE);
 
     $mail->Send();
@@ -272,15 +287,19 @@ function fertility_form_submit($form, &$form_state) {
 
 }
 
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function fertility_result($params) {
 
   $printfriendly = sprintf('<div> %s </div>', t('<a target="_blank" href="@link">Printer Friendly</a>', array('@link' => url('fertility/print/' . $params))));
 
-  $params   = json_decode(base64_decode($params), TRUE);
+  $params = json_decode(base64_decode($params), TRUE);
 
-  $content  = '';
+  $content = '';
 
-  if ( ! is_array($params) || count($params) != 7) {
+  if (! is_array($params) || count($params) != 7) {
     $content .= t("Invalid params");
   }
   else {
@@ -292,13 +311,17 @@ function fertility_result($params) {
   return $content;
 }
 
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function fertility_print($params) {
 
-  $params   = json_decode(base64_decode($params), TRUE);
+  $params = json_decode(base64_decode($params), TRUE);
 
-  $content  = '';
+  $content = '';
 
-  if ( ! is_array($params) || count($params) != 7) {
+  if (! is_array($params) || count($params) != 7) {
     $content .= t("Invalid params");
   }
   else {
@@ -306,14 +329,9 @@ function fertility_print($params) {
   }
 
   $tmp_logo = sprintf('
-    <img id="logo" alt="%s" src="%s/logo.png"/>
+    <img id="logo" alt="" src="http://%s/%s/logo.png"/>
     <div>%s - %s</div>
-    ',
-    variable_get('site_name', ''),
-    path_to_theme(),
-    variable_get('site_name', ''),
-    drupal_get_title()
-  );
+    ', variable_get('site_name', ''), path_to_theme(), variable_get('site_name', ''), drupal_get_title());
 
   $output = sprintf('
     <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -336,27 +354,24 @@ function fertility_print($params) {
 
       </body>
     </html>
-    ',
-    drupal_get_html_head(),
-    path_to_theme(),
-    drupal_get_title(),
-    variable_get('site_name', ''),
-    $tmp_logo,
-    $content
-  );
+    ', drupal_get_html_head(), path_to_theme(), drupal_get_title(), variable_get('site_name', ''), $tmp_logo, $content);
 
   echo $output;
 
 }
 
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function fertility_format_result($params) {
-
+  $dates = '';
   $dates = explode('-', $dates);
-  $dateformat = "%B %e, %Y";
+  $dateformat = "%B %d, %Y";
 
   $content = '';
 
-  $content .=  sprintf('<h3> %s </h3>', t("Datas selecionadas"));
+  $content .= sprintf('<h3> %s </h3>', t("Datas selecionadas"));
 
   if ($params['d1'] != 0) {
     $content .= sprintf('%s: %s<br />', t("Data 1"), strftime($dateformat, $params['d1']));
@@ -370,34 +385,34 @@ function fertility_format_result($params) {
     $content .= sprintf('%s: %s<br />', t("Data 3"), strftime($dateformat, $params['d3']));
   }
 
-  $content .=  "<br />";
+  $content .= "<br />";
 
-  $content .=  sprintf('%s <b> %s </b> %s <br />', t("Seu ciclo menstrual é de aproximadamente: "), $params['d0c'], t("dias "));
-  $content .=  sprintf('%s <b> %s </b> <br /><br />', t("A data do próximo período menstrual deverá ser: "), strftime($dateformat, $params['d0']));
+  $content .= sprintf('%s <b> %s </b> %s <br />', t("Seu ciclo menstrual é de aproximadamente: "), $params['d0c'], t("dias "));
+  $content .= sprintf('%s <b> %s </b> <br /><br />', t("A data do próximo período menstrual deverá ser: "), strftime($dateformat, $params['d0']));
 
-  $content .=  sprintf('<h3 > %s </h3>', t("Informação relacionada com o período de fertilidade:"));
+  $content .= sprintf('<h3 > %s </h3>', t("Informação relacionada com o período de fertilidade:"));
 
-  $content .=  sprintf('<b> %s </b> %s <br />', strftime($dateformat, $params['d01']), t("Alta fertilidade. Começa em período de alta fertilidade"));
-  $content .=  sprintf('<b> %s </b> %s <br />', strftime($dateformat, $params['d02']), t("Ovulação . Termina em período de alta fertilidade"));
+  $content .= sprintf('<b> %s </b> %s <br />', strftime($dateformat, $params['d01']), t("Alta fertilidade. Começa em período de alta fertilidade"));
+  $content .= sprintf('<b> %s </b> %s <br />', strftime($dateformat, $params['d02']), t("Ovulação . Termina em período de alta fertilidade"));
 
   //erm generate the calendars
   $month1 = array();
   $month2 = array();
-  $month  = intval(strftime('%m', $params['d01']));
-  $year  = intval(strftime('%Y', $params['d01']));
-  $date   = $params['d01'];
+  $month = intval(strftime('%m', $params['d01']));
+  $year = intval(strftime('%Y', $params['d01']));
+  $date = $params['d01'];
 
-  $config = array (
-     'local_time'   => $params['d0'],
-     'template'     =>
-      '{table_open}<table class="cal_table" border="0" cellpadding="2" cellspacing="2">{/table_open}
+  $config = array(
+    'local_time' => $params['d0'],
+    'template' => '{table_open}<table class="cal_table" border="0" cellpadding="2" cellspacing="2">{/table_open}
 
        {cal_cell_content} <div class="cal_fertil" > <b>{day}</b> </div> {/cal_cell_content}
        {cal_cell_content_today} <div class="cal_next" > <b>{day}</b> </div>{/cal_cell_content_today}
-      '
-   );
+      ',
+  );
 
-  require("class.calendar.php");
+  $path = drupal_get_path('module', 'fertility');
+  require $path . '/' . "class.calendar.php";
   $calendar = new CI_Calendar($config);
 
   //erm dias del periodo fertil
@@ -411,7 +426,7 @@ function fertility_format_result($params) {
       $month2[$day] = $day;
     }
     //$date += 86400;
-    $date = mktime(0,0,0, strftime('%m', $date), (strftime('%d', $date)+1), strftime('%Y', $date)); //next cycle
+    $date = mktime(0, 0, 0, strftime('%m', $date), (strftime('%d', $date) + 1), strftime('%Y', $date)); //next cycle
   }
 
   //erm. dia del proximo periodo
@@ -467,18 +482,15 @@ function fertility_format_result($params) {
     $content .= sprintf('<td valign="top"> %s </td>', $calendar->generate($year, $month, $month1));
   }
   if (count($month2)) {
-    $content .=  sprintf('<td valign="top"> %s </td>', $calendar->generate($year, $month+1, $month2));
+    $content .= sprintf('<td valign="top"> %s </td>', $calendar->generate($year, $month + 1, $month2));
   }
   $content .= '</tr>';
 
-  $content .=  sprintf('<tr><td colspan="2"> <div> %s </div> <div> %s </div></td></tr>',
-    t("Vermelho: Período de alta fertilidade e ovulação"),
-    t("Verde: Data provável do próximo ciclo menstrual")
-  );
+  $content .= sprintf('<tr><td colspan="2"> <div> %s </div> <div> %s </div></td></tr>', t("Vermelho: Período de alta fertilidade e ovulação"), t("Verde: Data provável do próximo ciclo menstrual"));
 
   $content .= '</table></div>';
 
-  $content .=  sprintf('<hr /> <b> %s </b>', t("ADVERTÊNCIA: Este calendário não pode e nem deve ser usado para prevenir gravidez"));
+  $content .= sprintf('<hr /> <b> %s </b>', t("ADVERTÊNCIA: Este calendário não pode e nem deve ser usado para prevenir gravidez"));
 
   return $content;
 
